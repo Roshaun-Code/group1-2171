@@ -1,39 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Portfolio</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <style>
-        /* Hide the default file input */
-        .custom-file-input {
-            display: none;
-        }
-        /* Style the custom file label */
-        .custom-file-label { 
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .custom-file-label:hover {
-            background-color: #0056b3;
-        }
-        /* Show selected file name */
-        .file-name {
-            margin-top: 10px;
-            font-style: italic;
-        }
-    </style>
-</head>
+{% extends "base.html"%}
+
+{% block main %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 <body>
     <div class="container my-4">
         <h1 class="text-center">Upload Portfolio</h1>
-        <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data" class="mt-4">
+        <form method="POST" action="{{ url_for('portfolio.upload') }}" enctype="multipart/form-data" class="mt-4">
             {{ form.hidden_tag() }}
             <div class="mb-3">
                 <label for="title" class="form-label">Title:</label>
@@ -54,7 +28,7 @@
                 <!-- File name display -->
                 <p id="file-name" class="file-name"></p>
             </div>
-            <button type="submit" class="btn btn-success">Upload</button>
+            <button type="submit" class="btn btn-primary">Upload</button>
             <a href="{{ url_for('index') }}" class="btn btn-secondary">Back</a>
         </form>
     </div>
@@ -66,4 +40,4 @@
         });
     </script>
 </body>
-</html>
+{% endblock %}

@@ -1,34 +1,7 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark">
-    <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
-    <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
-  >
-    <!-- <link rel="stylesheet" href="css/pico.min.css"> -->
-    <title>Hello world!</title>
-  </head>
-  <body>
-    <main class="container">
-    <div id="home">
+{% extends "base.html" %}
 
-        <nav>
-            <ul>
-              <li><strong>Group4 </strong></li>
-            </ul>
-            <ul>
-            <li> <a hx-get="/login" hx-push-url="true" hx-target="#home"> Login </li>
-              <li><a href="#">Booking</a></li>
-              <li><a hx-get="/bookings" hx-push-url="true" hx-target="#home">My Dashboard</a></li>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Services</a></li>
-              <li><a href="/templates/product.html">Products</a></li>
-            </ul>
-          </nav>
+{% block main %}
+    <div id="home">
 
           <h1>Welcome to Booking</h1>
           <p> Fill out the below information to book a session with one of our stylists</p>
@@ -76,7 +49,7 @@
                   <summary>
                     Select an artist
                   </summary>
-                  <ul>
+                  <ul id="dropdown_ul">
                     <li>    print(s)
 
                       <label>
@@ -130,8 +103,5 @@
             
     
         </div>
-
-    </main>
     </div>
-  </body>
-</html>
+{% endblock %}

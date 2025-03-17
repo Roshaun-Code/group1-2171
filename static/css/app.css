@@ -1,0 +1,222 @@
+[data-theme="light"],
+:root:not([data-theme="dark"]) {
+    --pico-background-color: #fff5fa;
+    --pico-primary: #ff66b2;
+    --pico-primary-background: #ff99cc; 
+    --primary-hover: #ff3385;
+    --pico-primary-inverse: white; 
+    --pico-text-color: #333;
+
+    --soft-pink: #F9DBDF;
+    --card-pink: #F9C8CE;
+    --light-pink: #F6547E;
+    --lightest-pink: #F9B4BE;
+    --darker-pink: #F42C6F;
+    --dark-text: #333;
+    --light-gray: #888;
+    --white: white;
+
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#header {
+    background-color: var(--darker-pink);
+    padding: 10px;
+    color: white !important;
+    /* height: 3.5rem !important; */
+}
+
+header{
+    padding: 0 !important;
+}
+
+/* General Styling */
+body {
+    background-color: var(--soft-pink);
+    color: var(--dark-text);
+    font-family: Arial, sans-serif;
+    min-height: 100vh !important;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--light-pink);
+}
+
+.navbar-brand {
+    color: var(--white);
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    color: var(--white);
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+.nav-link:hover {
+    color: var(--light-pink);
+}
+
+/* Booking Section */
+.booking-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 40px;
+}
+
+.image-container img {
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.booking-form {
+    max-width: 500px;
+    background: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: var(--darker-pink);
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+p {
+    color: #555;
+    font-size: 1.1rem;
+}
+
+/* Date Input */
+input[type="datetime-local"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--light-pink);
+    border-radius: 5px;
+    background-color: var(--soft-pink);
+    font-size: 1rem;
+    color: var(--dark-text);
+}
+
+input[type="datetime-local"]:focus {
+    border-color: var(--darker-pink);
+    outline: none;
+}
+
+input, select, textarea {
+    background-color: var(--soft-pink);
+    color: var(--dark-text);
+    border: 1px solid var(--light-pink);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+input::placeholder, textarea::placeholder, select {
+    color: var(--light-gray);
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--darker-pink);
+    outline: none;
+}
+
+.dropdown{
+    background-color: var(--soft-pink);
+    color: var(--dark-text);
+    border: 1px solid var(--light-pink) !important;
+    border-radius: 5px;
+    font-size: 1rem;
+    appearance: none;
+    overflow: visible;
+}
+
+.dropdown summary{
+    background-color: var(--soft-pink) !important;
+    border: none !important;
+    color: var(--dark-text);
+}
+
+.dropdown_ul{
+    background-color: var(--soft-pink) !important;
+}
+
+/* Add a custom dropdown arrow */
+select::-ms-expand {
+    display: none; /* Removes default arrow in IE/Edge */
+}
+
+select:focus {
+    border-color: var(--darker-pink);
+    outline: none;
+}
+
+/* Dropdown Options */
+option {
+    background: var(--white);
+    color: var(--dark-text);
+}
+
+/* portfolio stuff */
+.form-select{
+    background-color: var(--soft-pink);
+    color: var(--dark-text);
+    border: 1px solid var(--light-pink) !important;
+    border-radius: 5px;
+    font-size: 1rem;
+    appearance: none;
+    overflow: visible;
+}
+
+.btn-primary{
+    background-color: var(--light-pink);
+    color: var(--lightest-pink);
+    border: 0;
+}
+
+.btn-primary:hover{
+    background-color: var(--darker-pink);
+}
+
+.btn-danger{
+    background-color: var(--darker-pink);
+    color: var(--lightest-pink);
+}
+
+.card-body{
+    background-color: var(--card-pink);
+}
+
+.custom-file-label{
+    background-color: var(--darker-pink);
+    color: var(--lightest-pink);
+}
+
+#title{
+    background-color: var(--lightest-pink);
+}
+
+.btn-primary:disabled{
+    background-color: var(--darker-pink);
+    color: var(--lightest-pink);
+}
+
+/* products page */
+.product{
+    background-color: var(--light-pink);
+    border-left: solid 15px var(--lightest-pink);
+}
+
+.recommendations_box{
+    background-color: var(--darker-pink);
+}

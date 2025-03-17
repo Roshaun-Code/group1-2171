@@ -1,0 +1,82 @@
+*{
+    /* margin: 0;
+    padding: 0; */
+    font-size: 16px;
+    font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body{
+    min-height: 100vh;
+}
+h1 {
+    font-size: 2.5rem;
+    color: #333;
+}
+
+h2{
+    color: #333;
+}
+
+.products{
+    padding: 10px;
+    margin: 5px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: auto;
+    gap: 2rem;
+    grid-row: 1/3;
+}
+
+.product{
+    background-color: var(--p_bg);
+    padding-top: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 15px;
+    display: grid;
+    grid-template-rows: 4fr 1fr;
+    border-radius: 10px;
+    border-left: 10px solid var(--product);
+    box-shadow: 3px 3px 5px rgb(0 0 0 / 0.2);
+    transition: 300ms;
+}
+
+.product:hover{
+    transform: scale(1.05);
+    box-shadow: 1px 1px 8px rgb(0 0 0 / 0.4);
+}
+
+.product .product-content{
+    display: flex;
+    flex-direction: column;
+    color: #87817c;
+}
+
+.product .icons{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+    cursor: pointer;
+    filter: invert(1);
+}
+
+.product_icon{
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.recommendations_box{
+    background-color: var(--pr_bg);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 5px rgb(0 0 0 / 0.2);
+}
+
+img{
+    height: 150px;
+    width: 150px;
+    border: white;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}

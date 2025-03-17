@@ -1,68 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+{% extends "base.html" %}
 
-    <style>
-        /* Style to ensure all images have the same size */
-        .portfolio-img {
-            width: 100%;
-            height: 200px;  /* Fixed height for the images */
-            object-fit: cover; /* Ensure the image is cropped to cover the area */
-        }
-
-        /* For smaller screens, reduce the image height */
-        @media (max-width: 768px) {
-            .portfolio-img {
-                height: 150px; /* Smaller height for mobile devices */
-            }
-        }
-
-        /* List view style */ 
-        .list-view .portfolio-item {
-            display: flex;
-            margin-bottom: 20px;
-            height: auto; /* Remove the fixed height */
-            align-items: center; /* Vertically center the content */
-        }
-
-        .list-view .portfolio-item img {
-            width: 150px; /* Fixed image size for List view */
-            height: 150px;
-            object-fit: cover;
-            margin-right: 20px;
-        }
-
-        .list-view .card-body {
-            flex: 1;
-        }
-
-        /* Ensure list view card is full width */
-        .list-view .card {
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            align-items: center;  /* Align items in row */
-        }
-    </style>
-</head>
+{% block main %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 <body>
+
     <div class="container my-4">
         <h1 class="text-center">Portfolio</h1>
 
-        <!-- Upload Button -->
         <div class="mb-3">
             {% if items|length < 6 %}
-                <a href="{{ url_for('upload') }}" class="btn btn-primary">Upload New Portfolio Item</a>
+                <a href="{{ url_for('portfolio.upload') }}" class="btn btn-primary">Upload New Portfolio Item</a>
             {% else %}
                 <button class="btn btn-primary" disabled>You can only upload up to 6 items</button>
             {% endif %}
         </div>
 
-        <!-- Category Filter -->
         <div class="mb-3">
             <form method="get" action="{{ url_for('index') }}">
                 <label for="category">Filter by Category:</label>
@@ -74,13 +28,11 @@
             </form>
         </div>
 
-        <!-- Toggle Buttons for Gallery and List Views -->
         <div class="text-center mb-3">
-            <button id="gallery-btn" class="btn btn-secondary">Gallery View</button>
-            <button id="list-btn" class="btn btn-secondary">List View</button>
+            <button id="gallery-btn" class="btn btn-primary">Gallery View</button>
+            <button id="list-btn" class="btn btn-primary">List View</button>
         </div>
 
-        <!-- Portfolio Items Container -->
         <div id="portfolio-container" class="row gallery-view">
             {% for item in items %}
                 <div class="col-md-4 portfolio-item">
@@ -89,9 +41,9 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ item.title }}</h5>
                             <p class="card-text">Category: {{ item.category }}</p>
-                            <!-- Edit and Delete Buttons -->
-                            <a href="{{ url_for('edit', item_id=item.id) }}" class="btn btn-primary">Edit</a>
-                            <a href="{{ url_for('delete', item_id=item.id) }}" class="btn btn-danger">Delete</a>
+                            <a href="{{ url_for('portfolio.edit', item_id=item.id) }}" class="btn btn-primary">Edit</a>
+                            <a href="{{ url_for('portfolio.delete', item_id=item.id) }}" class="btn btn-danger">Delete</a>
+
                         </div>
                     </div>
                 </div>
@@ -102,12 +54,10 @@
     </div>
 
     <script>
-        // Get the buttons and portfolio container
         const galleryBtn = document.getElementById('gallery-btn');
         const listBtn = document.getElementById('list-btn');
         const portfolioContainer = document.getElementById('portfolio-container');
 
-        // Event listeners for the buttons to switch views
         galleryBtn.addEventListener('click', () => {
             portfolioContainer.classList.remove('list-view');
             portfolioContainer.classList.add('gallery-view');
@@ -121,4 +71,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+ {% endblock %}
