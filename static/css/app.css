@@ -141,6 +141,15 @@ input:focus, select:focus, textarea:focus {
     overflow: visible;
 }
 
+details.dropdown summary+ul{
+    background-color: var(--soft-pink) !important;
+    color: var(--dark-text);
+}
+
+details.dropdown summary+ul li:hover{
+    background-color: var(--light-pink) !important;
+}
+
 .dropdown summary{
     background-color: var(--soft-pink) !important;
     border: none !important;
@@ -149,6 +158,7 @@ input:focus, select:focus, textarea:focus {
 
 .dropdown_ul{
     background-color: var(--soft-pink) !important;
+    color: var(--soft-pink);
 }
 
 /* Add a custom dropdown arrow */
