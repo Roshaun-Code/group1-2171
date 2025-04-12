@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block main %}
+<body>
+    <main class="container">
+        <h1>Create Event Package</h1>
+        
+        <form method="POST">
+            <fieldset>
+                <legend>Event Details</legend>
+                
+                <div class="grid">
+                    <label>
+                        Event Name
+                        <input type="text" name="event_name" required>
+                    </label>
+                    
+                    <label>
+                        Date & Time
+                        <input type="datetime-local" name="event_date" required>
+                    </label>
+                </div>
+                
+                <div class="grid">
+                    <label>
+                        Location
+                        <input type="text" name="location" required>
+                    </label>
+                    
+                    <label>
+                        Makeup Artist
+                        <input type="text" name="artist_name" required>
+                    </label>
+                </div>
+                
+                <button type="submit">Create Package</button>
+            </fieldset>
+        </form>
+        
+        <h3>Check Availability</h3>
+        <form hx-post="/events/check_availability" hx-target="#availability-result">
+            <input type="datetime-local" name="datetime" required>
+            <button type="submit">Check</button>
+        </form>
+        <div id="availability-result"></div>
+    </main>
+</body>
+{% endblock %}

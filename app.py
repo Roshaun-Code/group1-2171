@@ -26,6 +26,18 @@ def createDB():
         reason TEXT NOT NULL,
         artist TEXT NOT NULL);
     """)
+    # New table for Requirement 5
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS services(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        package_name TEXT NOT NULL,
+        service1 TEXT NOT NULL,
+        service2 TEXT NOT NULL,
+        service3 TEXT NOT NULL,
+        appointment_date TEXT NOT NULL,
+        appointment_time TEXT NOT NULL,
+        artist TEXT NOT NULL);
+    """)
     conn.commit()
     conn.close()
 
@@ -60,13 +72,70 @@ def product():
 def login():
     return render_template('login.html')
 
-@app.route('/events')
+@app.route('/events', methods=['GET', 'POST'])
 def events():
-    return render_template('events.html')
+    if request.method == 'POST':
+        # Retrieve form data
+        event_name = request.form.get('event_name')
+        event_date_time = request.form.get('event_date_time')
+        location = request.form.get('location')
+        makeup_artist_name = request.form.get('makeup_artist_name')
 
-# @app.route('/upload')
-# def upload():
-#     return render_template('portfolioupload.html')
+        # Validate the form data
+        if not event_name or not event_date_time or not location or not makeup_artist_name:
+            return "<textarea readonly>All fields are required!</textarea>", 400
+
+        # Save the event to the database
+        conn = sqlite3.connect("company.db")
+        conn.execute(
+            "INSERT INTO bookings(reason, artist) VALUES(?, ?)",
+            (event_name, makeup_artist_name)
+        )
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('events'))  # Redirect to the events page after saving
+
+    # Fetch events from the database
+    conn = sqlite3.connect("company.db")
+    cursor = conn.execute("SELECT id, reason, artist FROM bookings")
+    events = [{"id": row[0], "name": row[1], "artist": row[2]} for row in cursor.fetchall()]
+    conn.close()
+
+    # Render the events page with the events list
+    return render_template('events.html', events=events)
+
+@app.route('/edit_event/<int:event_id>', methods=['GET', 'POST'])
+def edit_event(event_id):
+    conn = sqlite3.connect("company.db")
+    if request.method == 'POST':
+        # Update the event in the database
+        new_reason = request.form.get('reason')
+        new_artist = request.form.get('artist')
+        conn.execute(
+            "UPDATE bookings SET reason = ?, artist = ? WHERE id = ?",
+            (new_reason, new_artist, event_id)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('events'))
+
+    # Fetch the event details for editing
+    cursor = conn.execute("SELECT id, reason, artist FROM bookings WHERE id = ?", (event_id,))
+    event = cursor.fetchone()
+    conn.close()
+    if event:
+        return render_template('edit_event.html', event={"id": event[0], "reason": event[1], "artist": event[2]})
+    else:
+        return "Event not found", 404
+    
+@app.route('/delete_event/<int:event_id>', methods=['POST'])
+def delete_event(event_id):
+    conn = sqlite3.connect("company.db")
+    conn.execute("DELETE FROM bookings WHERE id = ?", (event_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('events'))
 
 @app.route('/date', methods=['POST'])
 def home():
@@ -118,12 +187,14 @@ def cancel():
 
     return f"<textarea readonly> Booking with id {id} has been cancelled </textarea>"
 
+
+
 def isUniqueDate(date):
     conn = sqlite3.connect("company.db")
     cursor = conn.execute("SELECT * FROM dates WHERE date = ?", (date,))
     result = cursor.fetchone()
     conn.close()
-    return result is None  
+    return result is None
 
 if __name__ == '__main__':
     with app.app_context():
