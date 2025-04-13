@@ -1,17 +1,27 @@
 <nav id="header">
-    <ul>
+  <ul>
       <li><strong>Glam Lock J.A</strong></li>
-    </ul>
-    <ul>
-    <li> <a hx-get="/login" hx-push-url="true" hx-target="body"> Login </li>
-      <li><a hx-get="/booking" hx-push-url="true" hx-target="body">Booking</a></li>
-      <li><a hx-get="/bookings" hx-push-url="true" hx-target="body">My Dashboard</a></li>
-      <li><a hx-get="/portfolio" hx-push-url="true" hx-target="body">Portfolio</a></li>
-      <li><a hx-get="/product" hx-push-url="true" hx-target="body">Product</a></li>
-      <li><a hx-get="/events" hx-push-url="true" hx-target="body">Event</a></li>
-      <li><a hx-get="/feedback" hx-push-url="true" hx-target="body">Feedback</a></li>
-      <li><a hx-get="/feedback_summary" hx-push-url="true" hx-target="body">Summary</a></li>
-      <li><a hx-get="/create_event" hx-push-url="true" hx-target="body">Create Event</a></li>
-      <li><a hx-get="/clients" hx-push-url="true" hx-target="body">Client</a></li>
-    </ul>
-  </nav>
+  </ul>
+  <ul>
+      {% if 'user_id' not in session %}
+          <!-- Show these links when the user is not logged in -->
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+      {% else %}
+          <!-- Show these links when the user is logged in -->
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+          {% if session['role'] == 'client' %}
+              <!-- Links for clients -->
+              <li><a href="{{ url_for('hello') }}">Booking</a></li>
+              <li><a href="{{ url_for('product') }}">Product</a></li>
+              <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
+              <li><a href="{{ url_for('events') }}">Events</a></li>
+          {% elif session['role'] == 'admin' %}
+              <!-- Links for admins -->
+              <li><a href="{{ url_for('clients') }}">Manage Clients</a></li>
+              <li><a href="{{ url_for('create_event') }}">Create Event</a></li>
+              <li><a href="{{ url_for('feedback_summary') }}">Feedback Summary</a></li>
+          {% endif %}
+      {% endif %}
+  </ul>
+</nav>

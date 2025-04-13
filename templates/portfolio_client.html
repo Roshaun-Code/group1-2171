@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block main %}
+  <h1>Portfolio</h1>
+  <ul>
+    {% for item in portfolio_items %}
+      <li>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+        <img src="{{ item.image_url }}" alt="{{ item.title }}" width="200">
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

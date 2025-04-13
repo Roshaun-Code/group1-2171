@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block main %}
+  <body>
+    <main class="container">
+      <h1>Welcome to Glam Lock J.A</h1>
+      <p>Your one-stop solution for makeup bookings and management.</p>
+      <p>Please log in or register to continue:</p>
+      <div>
+        <a href="{{ url_for('login') }}" class="btn btn-primary">Log In</a>
+        <a href="{{ url_for('register') }}" class="btn btn-secondary">Register</a>
+      </div>
+    </main>
+  </body>
+{% endblock %}

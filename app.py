@@ -1,20 +1,23 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 from portfolio import portfolio_bp, db
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 
 app = Flask(__name__)
+app.secret_key = 'roshaun'
 
 # Database Setup
 def createDB():
     conn = sqlite3.connect("company.db")
     conn.execute("""
     CREATE TABLE IF NOT EXISTS users(
-        id INTEGER PRIMARY KEY,
-        first_name TEXT NOT NULL,
-        last_name TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        phone TEXT NOT NULL UNIQUE);
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL CHECK(role IN ('client', 'admin'))
+    );
     """)
     conn.execute("""
     CREATE TABLE IF NOT EXISTS dates(
@@ -87,24 +90,96 @@ db.init_app(app)
 # Register Portfolio Blueprint
 app.register_blueprint(portfolio_bp, url_prefix='/portfolio')
 
+def login_required(role=None):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            if 'user_id' not in session:
+                flash("You need to log in first.", "warning")
+                return redirect(url_for('login'))
+            if role and session.get('role') != role:
+                flash("You do not have permission to access this page.", "danger")
+                return redirect(url_for('index'))
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
 # Routes
 @app.route('/')
 def index():
-    return redirect(url_for('hello'))
+    if 'user_id' in session:
+        if session['role'] == 'client':
+            return render_template('home.html', role='client')  # Render home page for clients
+        elif session['role'] == 'admin':
+            return render_template('home.html', role='admin')  # Render home page for admins
+    return redirect(url_for('welcome'))  # Redirect unauthenticated users to the welcome page
+
+@app.route('/welcome')
+def welcome():
+    return render_template('welcome.html')
 
 @app.route('/booking')
+@login_required(role='client')
 def hello():
     return render_template('index.html', name="Ry")
 
 @app.route("/product")
+@login_required(role='client')
 def product():
     return render_template('product.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        conn = sqlite3.connect("company.db")
+        cursor = conn.execute("SELECT id, username, password, role FROM users WHERE username = ?", (username,))
+        user = cursor.fetchone()
+        conn.close()
+
+        if user and check_password_hash(user[2], password):
+            session['user_id'] = user[0]
+            session['username'] = user[1]
+            session['role'] = user[3]
+            flash(f"Welcome, {user[1]}!", "success")
+            return redirect(url_for('index'))  # Redirect to the index route
+        else:
+            flash("Invalid username or password", "danger")
+
     return render_template('login.html')
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash("You have been logged out.", "info")
+    return redirect(url_for('welcome'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        role = request.form.get('role')  # 'client' or 'admin'
+
+        hashed_password = generate_password_hash(password)
+
+        conn = sqlite3.connect("company.db")
+        try:
+            conn.execute("INSERT INTO users(username, password, role) VALUES(?, ?, ?)", (username, hashed_password, role))
+            conn.commit()
+            flash("User registered successfully! Please log in.", "success")
+            return redirect(url_for('welcome'))  # Redirect to the welcome page
+        except sqlite3.IntegrityError:
+            flash("Username already exists", "danger")
+        finally:
+            conn.close()
+
+    return render_template('register.html')
+
 @app.route('/create_event', methods=['GET', 'POST'])
+@login_required(role='admin')
 def create_event():
     if request.method == 'POST':
         # Retrieve form data
@@ -131,6 +206,7 @@ def create_event():
     return render_template('create_event.html')
 
 @app.route('/events')
+@login_required(role='client')
 def events():
     conn = sqlite3.connect("events.db")
     cursor = conn.execute("SELECT id, event_name, event_date, location, artist_name FROM events")
@@ -184,6 +260,7 @@ def delete_event(event_id):
     return redirect(url_for('events'))
 
 @app.route('/clients')
+@login_required(role='admin')
 def clients():
     conn = sqlite3.connect("clients.db")
     cursor = conn.execute("SELECT id, name, email, phone, preferences, event_requirements FROM clients")
@@ -262,6 +339,7 @@ def home():
     return "<textarea name='disabled' disabled>We couldn't process your request</textarea>"
 
 @app.route('/bookings')
+@login_required(role='admin')
 def bookings():
     conn = sqlite3.connect("company.db")
     cursor = conn.execute("SELECT * FROM bookings")
@@ -297,6 +375,7 @@ def cancel():
 
 
 @app.route('/feedback', methods=['GET', 'POST'])
+@login_required(role='client')
 def feedback():
     conn = sqlite3.connect("company.db")
     try:
@@ -326,6 +405,7 @@ def feedback():
         conn.close()  # Ensure the connection is closed
 
 @app.route('/feedback_summary')
+@login_required(role='admin')
 def feedback_summary():
     conn = sqlite3.connect("company.db")
     cursor = conn.execute("""

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block main %}
+  <body>
+    <main class="container">
+      <h1>Welcome to Glam Lock J.A</h1>
+      {% if role == 'client' %}
+        <p>Hello, valued client! Here are your options:</p>
+        <ul>
+          <li><a href="{{ url_for('hello') }}">View Bookings</a></li>
+          <li><a href="{{ url_for('product') }}">View Products</a></li>
+          <li><a href="{{ url_for('feedback') }}">Leave Feedback</a></li>
+        </ul>
+      {% elif role == 'admin' %}
+        <p>Hello, admin! Here are your options:</p>
+        <ul>
+          <li><a href="{{ url_for('clients') }}">Manage Clients</a></li>
+          <li><a href="{{ url_for('create_event') }}">Create Event</a></li>
+          <li><a href="{{ url_for('feedback_summary') }}">View Feedback Summary</a></li>
+        </ul>
+      {% endif %}
+    </main>
+  </body>
+{% endblock %}

@@ -4,17 +4,16 @@
   <body>
     <main class="container">
 
-      <p> Please enter your email and password in order to login </p>
+      <p>Please enter your email and password in order to login</p>
       <h3>Login</h3>
-      <form>
+      <form method="POST" action="{{ url_for('login') }}">
         <fieldset class="grid">
           <input 
-            name="login"
-            placeholder="Login"
-            aria-label="Login"
+            name="username"
+            placeholder="Username"
+            aria-label="Username"
             autocomplete="username"
             required
-            
           />
           <input
             type="password"
@@ -30,8 +29,6 @@
           />
         </fieldset>
       </form>
-      <h2> This works {{name}}</h2>
-      <p> Sign in instead </p>
 
     </main>
   </body>
