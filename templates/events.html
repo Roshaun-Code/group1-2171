@@ -3,71 +3,33 @@
 {% block main %}
   <body>
     <main class="container">
-      <h1>Events</h1>
-
-      <!-- Form to create a new event package -->
-      <h3>Create a New Event Package</h3>
-      <form method="POST">
-        <input type="text" name="makeup_artist_name" placeholder="Makeup Artist Name" required>
-        <input type="text" name="location" placeholder="Location" required>
-        <input type="datetime-local" name="event_date_time" required>
-        <input type="text" name="event_name" placeholder="Event Name" required>
-        <button type="submit" name="create_event_package">Create Event Package</button>
-    </form>
-
-      <!-- List of current events -->
-      <h3>Your Upcoming Events</h3>
-        <ul>
-            {% for event in events %}
-                <li>
-                    <strong>{{ event.name }}</strong> - {{ event.date }}<br>
-                    <form action="{{ url_for('edit_event', event_id=event.id) }}" method="GET" style="display:inline;">
-                        <button type="submit" class="small-button edit-button">Edit</button>
-                    </form>
-
-                    <form action="{{ url_for('delete_event', event_id=event.id) }}" method="POST" style="display:inline;">
-                        <button type="submit" class="small-button delete-button">Delete</button>
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
-
+      <h1>Your Upcoming Events</h1>
+      <div class="events">
+        {% for event in events %}
+        <div class="event" id="event_{{ event.id }}">
+          <div class="event-content">
+            <div class="event_title">
+              <h5>{{ event.name }}</h5>
+            </div>
+            <div class="event_description">
+              <p>
+                Date: {{ event.date }}<br>
+                Location: {{ event.location }}<br>
+                Makeup Artist: {{ event.artist }}
+              </p>
+            </div>
+            <div class="event_actions">
+              <!-- Edit Button -->
+              <a href="{{ url_for('edit_event', event_id=event.id) }}" class="btn btn-primary">Edit</a>
+              <!-- Delete Button -->
+              <form action="{{ url_for('delete_event', event_id=event.id) }}" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
     </main>
-
-    <!-- <style>
-      .small-button {
-        padding: 5px 10px;
-        font-size: 0.8em;
-        cursor: pointer;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-      }
-
-      .small-button:hover {
-        background-color: #f1f1f1;
-      }
-
-      .small-button:active {
-        background-color: #e0e0e0;
-      }
-
-      .edit-button {
-        background-color: #1c39bb;
-        color: white;
-      }
-
-      .edit-button:hover {
-        background-color: #0000cd;
-      }
-
-      .delete-button {
-        background-color: #d9004c;
-        color: white;
-      }
-
-      .delete-button:hover {
-        background-color: #ff0038;
-      }
-    </style> -->
   </body>
 {% endblock %}

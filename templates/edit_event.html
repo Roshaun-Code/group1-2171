@@ -4,14 +4,24 @@
   <body>
     <main class="container">
       <h1>Edit Event</h1>
-
-      <!-- Form to edit the event -->
       <form method="POST">
-        <input type="text" name="makeup_artist_name" placeholder="Makeup Artist Name" value="{{ event.makeup_artist_name }}" required>
-        <input type="text" name="location" placeholder="Location" value="{{ event.location }}" required>
-        <input type="datetime-local" name="event_date_time" value="{{ event.date.strftime('%Y-%m-%dT%H:%M') }}" required>
-        <input type="text" name="event_name" placeholder="Event Name" value="{{ event.name }}" required>
-        <button type="submit">Save Changes</button>
+        <label>
+          Event Name:
+          <input type="text" name="event_name" value="{{ event.name }}" required>
+        </label>
+        <label>
+          Date & Time:
+          <input type="datetime-local" name="event_date" value="{{ event.date }}" required>
+        </label>
+        <label>
+          Location:
+          <input type="text" name="location" value="{{ event.location }}" required>
+        </label>
+        <label>
+          Makeup Artist:
+          <input type="text" name="artist_name" value="{{ event.artist }}" required>
+        </label>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
       </form>
     </main>
   </body>

@@ -36,13 +36,6 @@
                 <button type="submit">Create Package</button>
             </fieldset>
         </form>
-        
-        <h3>Check Availability</h3>
-        <form hx-post="/events/check_availability" hx-target="#availability-result">
-            <input type="datetime-local" name="datetime" required>
-            <button type="submit">Check</button>
-        </form>
-        <div id="availability-result"></div>
     </main>
 </body>
 {% endblock %}
