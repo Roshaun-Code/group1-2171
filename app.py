@@ -38,6 +38,16 @@ def createDB():
         appointment_time TEXT NOT NULL,
         artist TEXT NOT NULL);
     """)
+
+    #  New table for Requirement 6  
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS feedback(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        client_name TEXT NOT NULL,
+        comments TEXT NOT NULL,
+        rating INTEGER NOT NULL CHECK(rating >= 1 AND rating <= 5)
+    );
+    """)
     conn.commit()
     conn.close()
 
@@ -188,6 +198,47 @@ def cancel():
     return f"<textarea readonly> Booking with id {id} has been cancelled </textarea>"
 
 
+
+@app.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+    conn = sqlite3.connect("company.db")
+    try:
+        if request.method == 'POST':
+            # Retrieve form data
+            client_name = request.form.get('client_name')
+            comments = request.form.get('comments')
+            rating = request.form.get('rating')
+
+            # Validate form data
+            if not client_name or not comments or not rating:
+                return "All fields are required!", 400
+
+            # Save feedback to the database
+            conn.execute(
+                "INSERT INTO feedback(client_name, comments, rating) VALUES(?, ?, ?)",
+                (client_name, comments, int(rating))
+            )
+            conn.commit()
+            return redirect(url_for('feedback'))  # Redirect to the feedback page after submission
+
+        # Fetch all feedback from the database
+        cursor = conn.execute("SELECT client_name, comments, rating FROM feedback")
+        feedback_list = [{"client_name": row[0], "comments": row[1], "rating": row[2]} for row in cursor.fetchall()]
+        return render_template('feedback.html', feedback_list=feedback_list)
+    finally:
+        conn.close()  # Ensure the connection is closed
+
+@app.route('/feedback_summary')
+def feedback_summary():
+    conn = sqlite3.connect("company.db")
+    cursor = conn.execute("""
+        SELECT AVG(rating) as avg_rating, COUNT(*) as total_feedback
+        FROM feedback
+    """)
+    summary = cursor.fetchone()
+    conn.close()
+
+    return render_template('feedback_summary.html', avg_rating=summary[0], total_feedback=summary[1])
 
 def isUniqueDate(date):
     conn = sqlite3.connect("company.db")

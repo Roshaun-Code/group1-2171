@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block main %}
+  <h1>Submit Feedback</h1>
+  <form method="POST">
+    <label for="client_name">Your Name:</label>
+    <input type="text" id="client_name" name="client_name" placeholder="Your Name" required>
+
+    <label for="comments">Your Feedback:</label>
+    <textarea id="comments" name="comments" placeholder="Your Feedback" required></textarea>
+
+    <label for="rating">Rating:</label>
+    <select id="rating" name="rating" required>
+      <option value="5">5 - Excellent</option>
+      <option value="4">4 - Good</option>
+      <option value="3">3 - Average</option>
+      <option value="2">2 - Poor</option>
+      <option value="1">1 - Very Poor</option>
+    </select>
+
+    <button type="submit">Submit Feedback</button>
+  </form>
+
+  <h2>Feedback Received</h2>
+  <ul>
+    {% for feedback in feedback_list %}
+      <li>
+        <strong>{{ feedback.client_name }}</strong>: {{ feedback.comments }} (Rating: {{ feedback.rating }})
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
