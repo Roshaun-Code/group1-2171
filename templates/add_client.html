@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block main %}
+<h1>Add New Client</h1>
+<form method="POST">
+    <label>Name: <input type="text" name="name" required></label>
+    <label>Email: <input type="email" name="email" required></label>
+    <label>Phone: <input type="text" name="phone" required></label>
+    <label>Preferences: <textarea name="preferences"></textarea></label>
+    <label>Event Requirements: <textarea name="event_requirements"></textarea></label>
+    <button type="submit">Add Client</button>
+</form>
+{% endblock %}

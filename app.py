@@ -58,6 +58,23 @@ def createEventsDB():
 
 createEventsDB()
 
+def createClientsDB():
+    conn = sqlite3.connect("clients.db")
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS clients(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        phone TEXT NOT NULL UNIQUE,
+        preferences TEXT,
+        event_requirements TEXT
+    );
+    """)
+    conn.commit()
+    conn.close()
+
+createClientsDB()
+
 # Flask Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///portfolio.db'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -165,6 +182,67 @@ def delete_event(event_id):
     conn.commit()
     conn.close()
     return redirect(url_for('events'))
+
+@app.route('/clients')
+def clients():
+    conn = sqlite3.connect("clients.db")
+    cursor = conn.execute("SELECT id, name, email, phone, preferences, event_requirements FROM clients")
+    clients = [{"id": row[0], "name": row[1], "email": row[2], "phone": row[3], "preferences": row[4], "event_requirements": row[5]} for row in cursor.fetchall()]
+    conn.close()
+    return render_template('clients.html', clients=clients)
+
+@app.route('/add_client', methods=['GET', 'POST'])
+def add_client():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        preferences = request.form.get('preferences')
+        event_requirements = request.form.get('event_requirements')
+
+        conn = sqlite3.connect("clients.db")
+        conn.execute(
+            "INSERT INTO clients(name, email, phone, preferences, event_requirements) VALUES(?, ?, ?, ?, ?)",
+            (name, email, phone, preferences, event_requirements)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('clients'))
+
+    return render_template('add_client.html')
+
+@app.route('/edit_client/<int:client_id>', methods=['GET', 'POST'])
+def edit_client(client_id):
+    conn = sqlite3.connect("clients.db")
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        preferences = request.form.get('preferences')
+        event_requirements = request.form.get('event_requirements')
+
+        conn.execute(
+            "UPDATE clients SET name = ?, email = ?, phone = ?, preferences = ?, event_requirements = ? WHERE id = ?",
+            (name, email, phone, preferences, event_requirements, client_id)
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for('clients'))
+
+    cursor = conn.execute("SELECT id, name, email, phone, preferences, event_requirements FROM clients WHERE id = ?", (client_id,))
+    client = cursor.fetchone()
+    conn.close()
+    if client:
+        return render_template('edit_client.html', client={
+            "id": client[0],
+            "name": client[1],
+            "email": client[2],
+            "phone": client[3],
+            "preferences": client[4],
+            "event_requirements": client[5]
+        })
+    else:
+        return "Client not found", 404
 
 @app.route('/date', methods=['POST'])
 def home():
