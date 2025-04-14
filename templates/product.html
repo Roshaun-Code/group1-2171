@@ -148,5 +148,32 @@
       </div>
     </main>
     </div>
+    <script>
+      // Function to handle thumbs-up click
+      function handleThumbsUp(productId) {
+          alert(`You liked the recommendation for product ID: ${productId}`);
+      }
+  
+      // Function to handle thumbs-down click
+      function handleThumbsDown(productId) {
+          alert(`You disliked the recommendation for product ID: ${productId}`);
+      }
+  
+      // Add event listeners to all thumbs-up icons
+      document.querySelectorAll('.thumbs-up').forEach((icon) => {
+          icon.addEventListener('click', () => {
+              const productId = icon.closest('.product').id; // Get the product ID from the parent element
+              handleThumbsUp(productId);
+          });
+      });
+  
+      // Add event listeners to all thumbs-down icons
+      document.querySelectorAll('.thumbs-down').forEach((icon) => {
+          icon.addEventListener('click', () => {
+              const productId = icon.closest('.product').id; // Get the product ID from the parent element
+              handleThumbsDown(productId);
+          });
+      });
+  </script>
   </body>
 {% endblock %}

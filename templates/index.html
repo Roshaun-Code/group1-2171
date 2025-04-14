@@ -33,7 +33,7 @@
         <div id="continue" style="padding-top:80px;" class="grid">
           <!-- <h3>Booking Continuation</h3> -->
           <div>
-            <form hx-post="/register" hx-target="#response1">
+            <form method="POST" action="{{ url_for('book') }}">
               <fieldset>
                 <label>
                  Requested Service

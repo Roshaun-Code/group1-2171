@@ -78,6 +78,40 @@ def createClientsDB():
 
 createClientsDB()
 
+def createProductsDB():
+    conn = sqlite3.connect("company.db")
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS products(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT NOT NULL,
+        price REAL NOT NULL,
+        image TEXT NOT NULL,
+        category TEXT NOT NULL
+    );
+    """)
+    conn.commit()
+    conn.close()
+
+createProductsDB()
+
+def createProductFeedbackDB():
+    conn = sqlite3.connect("company.db")
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS product_feedback(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        client_id INTEGER NOT NULL,
+        product_id INTEGER NOT NULL,
+        feedback TEXT NOT NULL CHECK(feedback IN ('like', 'dislike')),
+        FOREIGN KEY(client_id) REFERENCES clients(id),
+        FOREIGN KEY(product_id) REFERENCES products(id)
+    );
+    """)
+    conn.commit()
+    conn.close()
+
+createProductFeedbackDB()
+
 # Flask Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///portfolio.db'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -123,10 +157,39 @@ def welcome():
 def hello():
     return render_template('index.html', name="Ry")
 
-@app.route("/product")
+@app.route('/product')
 @login_required(role='client')
 def product():
-    return render_template('product.html')
+    conn = sqlite3.connect("company.db")
+    cursor = conn.execute("SELECT * FROM products")
+    products = [{"id": row[0], "name": row[1], "description": row[2], "price": row[3], "image": row[4], "category": row[5]} for row in cursor.fetchall()]
+    conn.close()
+    return render_template('product.html', products=products)
+
+@app.route('/recommendations/<int:client_id>')
+@login_required(role='client')
+def recommendations(client_id):
+    conn = sqlite3.connect("company.db")
+    try:
+        # Fetch client preferences
+        cursor = conn.execute("SELECT preferences FROM clients WHERE id = ?", (client_id,))
+        client = cursor.fetchone()
+        if not client or not client[0]:
+            flash("No preferences found for this client.", "warning")
+            return redirect(url_for('index'))
+
+        preferences = client[0].split(",")  # Split preferences into a list
+
+        # Fetch products matching client preferences
+        query = "SELECT * FROM products WHERE category IN ({})".format(
+            ",".join("?" for _ in preferences)
+        )
+        cursor = conn.execute(query, preferences)
+        products = [{"id": row[0], "name": row[1], "description": row[2], "price": row[3], "image": row[4], "category": row[5]} for row in cursor.fetchall()]
+
+        return render_template('recommendations.html', products=products)
+    finally:
+        conn.close()
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -163,6 +226,11 @@ def register():
         password = request.form.get('password')
         role = request.form.get('role')  # 'client' or 'admin'
 
+        # Validate form data
+        if not username or not password or not role:
+            flash("All fields are required!", "danger")
+            return redirect(url_for('register'))
+
         hashed_password = generate_password_hash(password)
 
         conn = sqlite3.connect("company.db")
@@ -177,6 +245,7 @@ def register():
             conn.close()
 
     return render_template('register.html')
+
 
 @app.route('/client/events')
 @login_required(role='client')
@@ -333,7 +402,7 @@ def edit_client(client_id):
 @app.route('/delete_client/<int:client_id>', methods=['POST'])
 @login_required(role='admin')
 def delete_client(client_id):
-    conn = sqlite3.connect("clients.db")  # Ensure this points to the correct database
+    conn = sqlite3.connect("clients.db")  
     try:
         conn.execute("DELETE FROM clients WHERE id = ?", (client_id,))
         conn.commit()
@@ -370,7 +439,7 @@ def bookings():
     conn.close()
     return render_template("bookings.html", bookings=bookings)
 
-@app.route('/register', methods=['POST'])
+@app.route('/book', methods=['POST'])
 def book():
     reason = request.form.get("reason")
     artist = request.form.get("phase")
