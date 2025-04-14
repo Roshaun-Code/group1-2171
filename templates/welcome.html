@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 
 {% block main %}
-  <body>
-    <main class="container">
+  <body class="welcome-body">
+    <main class="welcome-container">
       <h1>Welcome to Glam Lock J.A</h1>
       <p>Your one-stop solution for makeup bookings and management.</p>
       <p>Please log in or register to continue:</p>
       <div>
-        <a href="{{ url_for('login') }}" class="btn btn-primary">Log In</a>
-        <a href="{{ url_for('register') }}" class="btn btn-secondary">Register</a>
+        <form action="{{ url_for('login') }}" method="get" style="display: inline;">
+          <button type="submit" class="btn btn-primary">Log In</button>
+        </form>
+        <form action="{{ url_for('register') }}" method="get" style="display: inline;">
+          <button type="submit" class="btn btn-secondary">Register</button>
+        </form>
       </div>
     </main>
   </body>

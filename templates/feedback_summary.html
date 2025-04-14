@@ -2,6 +2,26 @@
 
 {% block main %}
   <h1>Feedback Summary</h1>
-  <p>Average Rating: {{ avg_rating }}</p>
-  <p>Total Feedback: {{ total_feedback }}</p>
+  <p><strong>Average Rating:</strong> {{ avg_rating }}</p>
+  <p><strong>Total Feedback:</strong> {{ total_feedback }}</p>
+
+  <h2>Detailed Feedback</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Client Name</th>
+        <th>Feedback</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for feedback in feedback_list %}
+      <tr>
+        <td>{{ feedback.client_name }}</td>
+        <td>{{ feedback.comments }}</td>
+        <td>{{ feedback.rating }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}

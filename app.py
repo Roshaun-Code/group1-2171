@@ -178,6 +178,15 @@ def register():
 
     return render_template('register.html')
 
+@app.route('/client/events')
+@login_required(role='client')
+def client_events():
+    conn = sqlite3.connect("events.db")
+    cursor = conn.execute("SELECT id, event_name, event_date, location, artist_name FROM events")
+    events = [{"id": row[0], "name": row[1], "date": row[2], "location": row[3], "artist": row[4]} for row in cursor.fetchall()]
+    conn.close()
+    return render_template('events_client.html', events=events)
+
 @app.route('/create_event', methods=['GET', 'POST'])
 @login_required(role='admin')
 def create_event():
@@ -206,7 +215,7 @@ def create_event():
     return render_template('create_event.html')
 
 @app.route('/events')
-@login_required(role='client')
+@login_required(role='admin')
 def events():
     conn = sqlite3.connect("events.db")
     cursor = conn.execute("SELECT id, event_name, event_date, location, artist_name FROM events")
@@ -321,6 +330,20 @@ def edit_client(client_id):
     else:
         return "Client not found", 404
 
+@app.route('/delete_client/<int:client_id>', methods=['POST'])
+@login_required(role='admin')
+def delete_client(client_id):
+    conn = sqlite3.connect("clients.db")  # Ensure this points to the correct database
+    try:
+        conn.execute("DELETE FROM clients WHERE id = ?", (client_id,))
+        conn.commit()
+        flash("Client deleted successfully!", "success")
+    except Exception as e:
+        flash(f"An error occurred: {e}", "danger")
+    finally:
+        conn.close()
+    return redirect(url_for('clients'))
+
 @app.route('/date', methods=['POST'])
 def home():
     date = request.form.get("datetime")
@@ -408,14 +431,16 @@ def feedback():
 @login_required(role='admin')
 def feedback_summary():
     conn = sqlite3.connect("company.db")
-    cursor = conn.execute("""
-        SELECT AVG(rating) as avg_rating, COUNT(*) as total_feedback
-        FROM feedback
-    """)
-    summary = cursor.fetchone()
-    conn.close()
+    cursor = conn.execute("SELECT client_name, comments, rating FROM feedback")
+    feedback_list = [{"client_name": row[0], "comments": row[1], "rating": row[2]} for row in cursor.fetchall()]
 
-    return render_template('feedback_summary.html', avg_rating=summary[0], total_feedback=summary[1])
+    cursor = conn.execute("SELECT AVG(rating), COUNT(*) FROM feedback")
+    summary = cursor.fetchone()
+    avg_rating = round(summary[0], 2) if summary[0] else 0
+    total_feedback = summary[1]
+
+    conn.close()
+    return render_template('feedback_summary.html', avg_rating=avg_rating, total_feedback=total_feedback, feedback_list=feedback_list)
 
 def isUniqueDate(date):
     conn = sqlite3.connect("company.db")

@@ -15,12 +15,15 @@
               <li><a href="{{ url_for('hello') }}">Booking</a></li>
               <li><a href="{{ url_for('product') }}">Product</a></li>
               <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
-              <li><a href="{{ url_for('events') }}">Events</a></li>
+              <li><a href="{{ url_for('client_events') }}">Events</a></li>
+              <li><a href="{{ url_for('portfolio.portfolio_client') }}">Portfolio</a></li>
           {% elif session['role'] == 'admin' %}
               <!-- Links for admins -->
               <li><a href="{{ url_for('clients') }}">Manage Clients</a></li>
-              <li><a href="{{ url_for('create_event') }}">Create Event</a></li>
               <li><a href="{{ url_for('feedback_summary') }}">Feedback Summary</a></li>
+              <li><a href="{{ url_for('portfolio.index') }}">Manage Portfolio</a></li>
+              <li><a href="{{ url_for('events') }}">Events</a></li>
+              <li><a href="{{ url_for('create_event') }}">Create Event</a></li>
           {% endif %}
       {% endif %}
   </ul>

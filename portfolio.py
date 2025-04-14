@@ -46,6 +46,12 @@ def index():
     form = PortfolioForm()  # Create an instance of the form
     return render_template('showcase.html', items=items, categories=categories, selected_category=category or 'All', form=form)
 
+@portfolio_bp.route('/client')
+def portfolio_client():
+    # Fetch all portfolio items from the database
+    portfolio_items = PortfolioItem.query.all()
+    return render_template('portfolio_client.html', portfolio_items=portfolio_items)
+
 @portfolio_bp.route('/upload', methods=['GET', 'POST'])
 def upload():
     form = PortfolioForm()

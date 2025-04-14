@@ -25,6 +25,10 @@
     font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+h2{
+    color: var(--dark-text);
+}
+
 #header {
     background-color: var(--darker-pink);
     padding: 10px;
@@ -60,8 +64,14 @@ body {
     margin-left: 15px;
 }
 
-.nav-link:hover {
-    color: var(--light-pink);
+a {
+    color: var(--pico-primary) !important;
+    text-decoration: none !important; 
+}
+
+a:hover {
+    color: var(--lightest-pink) !important;
+    text-decoration: underline !important;
 }
 
 /* Booking Section */
@@ -192,6 +202,8 @@ option {
     overflow: visible;
 }
 
+
+
 .btn-primary{
     background-color: var(--light-pink);
     color: var(--lightest-pink);
@@ -233,4 +245,134 @@ option {
 
 .recommendations_box{
     background-color: var(--darker-pink);
+}
+
+/* Welcome Page */
+.welcome-body {
+    position: relative;
+    background: none;
+    color: var(--white);
+}
+
+.welcome-body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(255, 102, 178, 0.7), rgba(255, 102, 178, 0.7)), 
+                url('../images/background.jpg') no-repeat center center/cover;
+    opacity: 0.5; 
+    z-index: -1;
+}
+
+.welcome-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 40px;
+    flex-direction: column;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--lightest-pink); 
+    color: var(--dark-text); 
+    border: 1px solid var(--light-pink); 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    border-radius: 8px; 
+    overflow: hidden; 
+}
+
+table th {
+    background-color: var(--light-pink); 
+    color: var(--lightest-pink); 
+    font-weight: bold;
+    text-align: left;
+    padding: 12px;
+    border-bottom: 2px solid var(--darker-pink);
+}
+
+table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--light-pink); 
+}
+
+table tr:nth-child(even) {
+    background-color: var(--soft-pink); 
+}
+
+table tr:hover {
+    background-color: var(--light-pink); 
+    transition: background-color 0.3s ease;
+}
+
+button {
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+button.btn-primary {
+    background-color: var(--light-pink);
+    color: var(--lightest-pink);
+}
+
+button.btn-primary:hover {
+    background-color: var(--darker-pink);
+}
+
+button.btn-danger {
+    background-color: var(--darker-pink);
+    color: var(--lightest-pink);
+}
+
+button.btn-danger:hover {
+    background-color: var(--dark-text);
+}
+
+/* Events Section */
+.events {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid layout */
+    gap: 20px; /* Space between cards */
+    margin-top: 20px;
+}
+
+.event.card {
+    background-color: var(--lightest-pink);
+    border: 1px solid var(--light-pink); 
+    border-radius: 8px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden; 
+    transition: transform 0.2s ease, box-shadow 0.2s ease; 
+    max-width: 250px;
+}
+
+.event.card:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); 
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--dark-text);
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: var(--dark-text);
+    line-height: 1.5;
 }
